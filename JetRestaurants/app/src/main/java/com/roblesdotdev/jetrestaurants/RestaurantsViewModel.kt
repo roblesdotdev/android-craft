@@ -3,6 +3,7 @@ package com.roblesdotdev.jetrestaurants
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -63,21 +64,33 @@ class RestaurantsViewModel : ViewModel() {
     private suspend fun getAllRestaurants(): List<Restaurant> {
         return withContext(Dispatchers.IO) {
             try {
-                val restaurants = restInterface.getRestaurants()
-                restaurantsDao.addAll(restaurants)
-                return@withContext restaurants
+                refreshCache()
             } catch (e: Exception) {
                 when (e) {
                     is UnknownHostException,
                     is ConnectException,
                     is HttpException
                     -> {
-                        return@withContext restaurantsDao.getAll()
+                        if (restaurantsDao.getAll().isEmpty()) {
+                            throw Exception("Something went wrong." + "We have no data.")
+                        }
                     }
                     else -> throw e
                 }
             }
+            return@withContext restaurantsDao.getAll()
         }
+    }
+
+    private suspend fun refreshCache() {
+        val remoteRestaurants = restInterface.getRestaurants()
+        val favoriteRestaurants = restaurantsDao.getAllFavorited()
+        restaurantsDao.addAll(remoteRestaurants)
+        restaurantsDao.updateAll(
+            favoriteRestaurants.map {
+                PartialRestaurant(it.id, true)
+            }
+        )
     }
 
 }
