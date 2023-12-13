@@ -7,12 +7,17 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.net.ConnectException
+import java.net.UnknownHostException
 
-class RestaurantsViewModel: ViewModel() {
+class RestaurantsViewModel : ViewModel() {
     private var restInterface: RestaurantsApiService
     val state = mutableStateOf(emptyList<Restaurant>())
+    private var restaurantsDao =
+        RestaurantsDb.getDaoInstance(RestaurantsApplication.getAppContext())
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
         exception.printStackTrace()
@@ -39,14 +44,28 @@ class RestaurantsViewModel: ViewModel() {
 
     private fun getRestaurants() {
         viewModelScope.launch(errorHandler) {
-            val restaurants = getRemoteRestaurants()
+            val restaurants = getAllRestaurants()
             state.value = restaurants
         }
     }
 
-    private suspend fun getRemoteRestaurants(): List<Restaurant> {
+    private suspend fun getAllRestaurants(): List<Restaurant> {
         return withContext(Dispatchers.IO) {
-            restInterface.getRestaurants()
+            try {
+                val restaurants = restInterface.getRestaurants()
+                restaurantsDao.addAll(restaurants)
+                return@withContext restaurants
+            } catch (e: Exception) {
+                when (e) {
+                    is UnknownHostException,
+                    is ConnectException,
+                    is HttpException
+                    -> {
+                        return@withContext restaurantsDao.getAll()
+                    }
+                    else -> throw e
+                }
+            }
         }
     }
 
