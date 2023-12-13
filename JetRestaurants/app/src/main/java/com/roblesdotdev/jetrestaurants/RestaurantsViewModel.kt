@@ -15,9 +15,10 @@ import java.net.UnknownHostException
 
 class RestaurantsViewModel : ViewModel() {
     private var restInterface: RestaurantsApiService
-    val state = mutableStateOf(emptyList<Restaurant>())
     private var restaurantsDao =
         RestaurantsDb.getDaoInstance(RestaurantsApplication.getAppContext())
+
+    val state = mutableStateOf(emptyList<Restaurant>())
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
         exception.printStackTrace()
@@ -34,13 +35,23 @@ class RestaurantsViewModel : ViewModel() {
         getRestaurants()
     }
 
-    fun toggleFavorite(id: Int) {
-        val restaurants = state.value.toMutableList()
-        val itemIndex = restaurants.indexOfFirst { it.id == id }
-        val item = restaurants[itemIndex]
-        restaurants[itemIndex] = item.copy(isFavorite = !item.isFavorite)
-        state.value = restaurants
+    fun toggleFavorite(id: Int, oldValue: Boolean) {
+        viewModelScope.launch(errorHandler) {
+            val updatedRestaurants = toggleFavoriteRestaurant(id, oldValue)
+            state.value = updatedRestaurants
+        }
     }
+
+    private suspend fun toggleFavoriteRestaurant(id: Int, oldValue: Boolean) =
+        withContext(Dispatchers.IO) {
+            restaurantsDao.update(
+                PartialRestaurant(
+                    id = id,
+                    isFavorite = !oldValue
+                )
+            )
+            restaurantsDao.getAll()
+        }
 
     private fun getRestaurants() {
         viewModelScope.launch(errorHandler) {
