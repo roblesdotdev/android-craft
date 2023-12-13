@@ -29,15 +29,21 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roblesdotdev.jetrestaurants.ui.theme.JetRestaurantsTheme
 
 @Composable
-fun RestaurantsScreen() {
+fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
     val viewModel: RestaurantsViewModel = viewModel()
     LazyColumn(
         contentPadding = PaddingValues(vertical = 8.dp, horizontal = 8.dp)
     ) {
         items(viewModel.state.value) {restaurant ->
-            RestaurantItem(restaurant) { id ->
-                viewModel.toggleFavorite(id)
-            }
+            RestaurantItem(
+                restaurant,
+                onFavoriteClick = { id ->
+                    viewModel.toggleFavorite(id)
+                },
+                onItemClick = { id ->
+                   onItemClick(id)
+                }
+            )
         }
     }
 }
@@ -46,6 +52,7 @@ fun RestaurantsScreen() {
 fun RestaurantItem(
         item: Restaurant,
         onFavoriteClick: (id: Int) -> Unit,
+        onItemClick: (id: Int) -> Unit
     ) {
     val icon = if (item.isFavorite) {
         Icons.Filled.Favorite
@@ -54,7 +61,9 @@ fun RestaurantItem(
     }
     Card(
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
-        modifier = Modifier.padding(8.dp)
+        modifier = Modifier
+            .padding(8.dp)
+            .clickable { onItemClick(item.id) }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,

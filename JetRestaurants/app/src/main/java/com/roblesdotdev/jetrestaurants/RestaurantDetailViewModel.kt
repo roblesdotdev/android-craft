@@ -1,6 +1,7 @@
 package com.roblesdotdev.jetrestaurants
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
@@ -9,7 +10,9 @@ import kotlinx.coroutines.withContext
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class RestaurantDetailViewModel : ViewModel() {
+class RestaurantDetailViewModel(
+    private val stateHandle: SavedStateHandle
+) : ViewModel() {
     private var restInterface: RestaurantsApiService
     val state = mutableStateOf<Restaurant?>(null)
 
@@ -21,8 +24,9 @@ class RestaurantDetailViewModel : ViewModel() {
         restInterface = retrofit.create(
             RestaurantsApiService::class.java
         )
+        val restaurantId = stateHandle.get<Int>("restaurant_id") ?: 0
         viewModelScope.launch {
-            val restaurant = getRemoteRestaurant(2)
+            val restaurant = getRemoteRestaurant(restaurantId)
             state.value = restaurant
         }
     }
