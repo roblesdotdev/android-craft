@@ -34,8 +34,7 @@ import com.roblesdotdev.jetrestaurants.ui.theme.JetRestaurantsTheme
 @Composable
 fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
     val viewModel: RestaurantsViewModel = viewModel()
-    val restaurants = viewModel.state.value
-    val isLoading = restaurants.isEmpty()
+    val state = viewModel.state.value
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize(),
@@ -43,7 +42,7 @@ fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
         LazyColumn(
             contentPadding = PaddingValues(vertical = 8.dp, horizontal = 8.dp)
         ) {
-            items(restaurants) {restaurant ->
+            items(state.restaurants) {restaurant ->
                 RestaurantItem(
                     restaurant,
                     onFavoriteClick = { id, oldValue ->
@@ -55,7 +54,7 @@ fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
                 )
             }
         }
-        if (isLoading) CircularProgressIndicator()
+        if (state.isLoading) CircularProgressIndicator()
     }
 }
 

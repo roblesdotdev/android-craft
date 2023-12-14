@@ -3,7 +3,6 @@ package com.roblesdotdev.jetrestaurants
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,7 +18,12 @@ class RestaurantsViewModel : ViewModel() {
     private var restaurantsDao =
         RestaurantsDb.getDaoInstance(RestaurantsApplication.getAppContext())
 
-    val state = mutableStateOf(emptyList<Restaurant>())
+    val state = mutableStateOf(
+        RestaurantsScreenState(
+            restaurants = emptyList(),
+            isLoading = true,
+        )
+    )
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
         exception.printStackTrace()
@@ -39,7 +43,9 @@ class RestaurantsViewModel : ViewModel() {
     fun toggleFavorite(id: Int, oldValue: Boolean) {
         viewModelScope.launch(errorHandler) {
             val updatedRestaurants = toggleFavoriteRestaurant(id, oldValue)
-            state.value = updatedRestaurants
+            state.value = state.value.copy(
+                restaurants = updatedRestaurants
+            )
         }
     }
 
@@ -57,7 +63,10 @@ class RestaurantsViewModel : ViewModel() {
     private fun getRestaurants() {
         viewModelScope.launch(errorHandler) {
             val restaurants = getAllRestaurants()
-            state.value = restaurants
+            state.value = state.value.copy(
+                restaurants = restaurants,
+                isLoading = false
+            )
         }
     }
 
