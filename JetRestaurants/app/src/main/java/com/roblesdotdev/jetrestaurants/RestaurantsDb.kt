@@ -7,8 +7,8 @@ import androidx.room.RoomDatabase
 import kotlin.concurrent.Volatile
 
 @Database(
-    entities = [Restaurant::class],
-    version = 2,
+    entities = [LocalRestaurant::class],
+    version = 3,
     exportSchema = false
 )
 abstract class RestaurantsDb : RoomDatabase() {
