@@ -1,5 +1,6 @@
 package com.roblesdotdev.jetrestaurants
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -9,16 +10,19 @@ import kotlinx.coroutines.launch
 class RestaurantsViewModel : ViewModel() {
     private val repository = RestaurantsRepository()
 
-    val state = mutableStateOf(
+    private val _state = mutableStateOf(
         RestaurantsScreenState(
             restaurants = emptyList(),
             isLoading = true,
         )
     )
 
+    val state: State<RestaurantsScreenState>
+        get() = _state
+
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
         exception.printStackTrace()
-        state.value = state.value.copy(
+        _state.value = _state.value.copy(
             error = exception.message,
             isLoading = false,
         )
@@ -31,7 +35,7 @@ class RestaurantsViewModel : ViewModel() {
     fun toggleFavorite(id: Int, oldValue: Boolean) {
         viewModelScope.launch(errorHandler) {
             val updatedRestaurants = repository.toggleFavoriteRestaurant(id, oldValue)
-            state.value = state.value.copy(
+            _state.value = _state.value.copy(
                 restaurants = updatedRestaurants
             )
         }
@@ -41,13 +45,12 @@ class RestaurantsViewModel : ViewModel() {
     private fun getRestaurants() {
         viewModelScope.launch(errorHandler) {
             val restaurants = repository.getAllRestaurants()
-            state.value = state.value.copy(
+            _state.value = _state.value.copy(
                 restaurants = restaurants,
                 isLoading = false
             )
         }
     }
-
 
 
 }
