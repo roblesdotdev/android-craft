@@ -1,9 +1,12 @@
-package com.roblesdotdev.jetrestaurants
+package com.roblesdotdev.jetrestaurants.restaurants.presentation.list
 
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.roblesdotdev.jetrestaurants.restaurants.domain.GetInitialRestaurantsUseCase
+import com.roblesdotdev.jetrestaurants.restaurants.data.RestaurantsRepository
+import com.roblesdotdev.jetrestaurants.restaurants.domain.ToggleRestaurantUseCase
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 

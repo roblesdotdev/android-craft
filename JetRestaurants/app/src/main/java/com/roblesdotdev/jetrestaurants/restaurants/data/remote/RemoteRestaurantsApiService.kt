@@ -1,9 +1,10 @@
-package com.roblesdotdev.jetrestaurants
+package com.roblesdotdev.jetrestaurants.restaurants.data.remote
 
+import com.roblesdotdev.jetrestaurants.restaurants.data.remote.RemoteRestaurant
 import retrofit2.http.GET
 import retrofit2.http.Query
 
-interface RestaurantsApiService {
+interface RemoteRestaurantsApiService {
     @GET("restaurants.json")
     suspend fun getRestaurants(): List<RemoteRestaurant>
 

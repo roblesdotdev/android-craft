@@ -1,5 +1,11 @@
-package com.roblesdotdev.jetrestaurants
+package com.roblesdotdev.jetrestaurants.restaurants.data
 
+import com.roblesdotdev.jetrestaurants.restaurants.domain.Restaurant
+import com.roblesdotdev.jetrestaurants.RestaurantsApplication
+import com.roblesdotdev.jetrestaurants.restaurants.data.local.LocalRestaurant
+import com.roblesdotdev.jetrestaurants.restaurants.data.local.PartialLocalRestaurant
+import com.roblesdotdev.jetrestaurants.restaurants.data.local.RestaurantsDb
+import com.roblesdotdev.jetrestaurants.restaurants.data.remote.RemoteRestaurantsApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -9,14 +15,14 @@ import java.net.ConnectException
 import java.net.UnknownHostException
 
 class RestaurantsRepository {
-    private var restInterface: RestaurantsApiService =
+    private var restInterface: RemoteRestaurantsApiService =
         Retrofit.Builder()
             .addConverterFactory(
                 GsonConverterFactory.create()
             )
             .baseUrl("https://restaurants-app-b8c89-default-rtdb.firebaseio.com/")
             .build()
-            .create(RestaurantsApiService::class.java)
+            .create(RemoteRestaurantsApiService::class.java)
 
     private var restaurantsDao = RestaurantsDb
         .getDaoInstance(RestaurantsApplication.getAppContext())

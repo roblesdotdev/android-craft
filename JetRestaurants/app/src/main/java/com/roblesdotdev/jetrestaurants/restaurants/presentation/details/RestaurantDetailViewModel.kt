@@ -1,9 +1,11 @@
-package com.roblesdotdev.jetrestaurants
+package com.roblesdotdev.jetrestaurants.restaurants.presentation.details
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.roblesdotdev.jetrestaurants.restaurants.domain.Restaurant
+import com.roblesdotdev.jetrestaurants.restaurants.data.remote.RemoteRestaurantsApiService
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -13,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 class RestaurantDetailViewModel(
     private val stateHandle: SavedStateHandle
 ) : ViewModel() {
-    private var restInterface: RestaurantsApiService
+    private var restInterface: RemoteRestaurantsApiService
     val state = mutableStateOf<Restaurant?>(null)
 
     init {
@@ -22,7 +24,7 @@ class RestaurantDetailViewModel(
             .baseUrl("https://restaurants-app-b8c89-default-rtdb.firebaseio.com/")
             .build()
         restInterface = retrofit.create(
-            RestaurantsApiService::class.java
+            RemoteRestaurantsApiService::class.java
         )
         val restaurantId = stateHandle.get<Int>("restaurant_id") ?: 0
         viewModelScope.launch {

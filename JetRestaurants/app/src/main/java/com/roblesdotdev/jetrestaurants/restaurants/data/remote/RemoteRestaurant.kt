@@ -1,4 +1,4 @@
-package com.roblesdotdev.jetrestaurants
+package com.roblesdotdev.jetrestaurants.restaurants.data.remote
 
 import com.google.gson.annotations.SerializedName
 

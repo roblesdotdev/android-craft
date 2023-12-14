@@ -1,4 +1,4 @@
-package com.roblesdotdev.jetrestaurants
+package com.roblesdotdev.jetrestaurants.restaurants.domain
 
 data class Restaurant(
     val id: Int,

@@ -1,4 +1,4 @@
-package com.roblesdotdev.jetrestaurants
+package com.roblesdotdev.jetrestaurants.restaurants.data.local
 
 import android.content.Context
 import androidx.room.Database

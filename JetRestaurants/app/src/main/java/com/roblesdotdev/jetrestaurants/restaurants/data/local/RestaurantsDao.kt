@@ -1,10 +1,12 @@
-package com.roblesdotdev.jetrestaurants
+package com.roblesdotdev.jetrestaurants.restaurants.data.local
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import com.roblesdotdev.jetrestaurants.restaurants.data.local.LocalRestaurant
+import com.roblesdotdev.jetrestaurants.restaurants.data.local.PartialLocalRestaurant
 
 @Dao
 interface RestaurantsDao {

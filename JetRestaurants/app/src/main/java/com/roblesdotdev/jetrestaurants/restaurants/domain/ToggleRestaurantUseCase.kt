@@ -1,4 +1,8 @@
-package com.roblesdotdev.jetrestaurants
+package com.roblesdotdev.jetrestaurants.restaurants.domain
+
+import com.roblesdotdev.jetrestaurants.restaurants.data.RestaurantsRepository
+import com.roblesdotdev.jetrestaurants.restaurants.domain.GetSortedRestaurantsUseCase
+import com.roblesdotdev.jetrestaurants.restaurants.domain.Restaurant
 
 class ToggleRestaurantUseCase {
     private val repository: RestaurantsRepository =

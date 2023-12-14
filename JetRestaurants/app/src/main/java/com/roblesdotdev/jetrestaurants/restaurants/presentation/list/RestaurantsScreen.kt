@@ -1,4 +1,4 @@
-package com.roblesdotdev.jetrestaurants
+package com.roblesdotdev.jetrestaurants.restaurants.presentation.list
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.roblesdotdev.jetrestaurants.restaurants.domain.Restaurant
 import com.roblesdotdev.jetrestaurants.ui.theme.JetRestaurantsTheme
 
 @Composable
@@ -61,9 +62,9 @@ fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
 
 @Composable
 fun RestaurantItem(
-        item: Restaurant,
-        onFavoriteClick: (id: Int, oldValue: Boolean) -> Unit,
-        onItemClick: (id: Int) -> Unit
+    item: Restaurant,
+    onFavoriteClick: (id: Int, oldValue: Boolean) -> Unit,
+    onItemClick: (id: Int) -> Unit
     ) {
     val icon = if (item.isFavorite) {
         Icons.Filled.Favorite
