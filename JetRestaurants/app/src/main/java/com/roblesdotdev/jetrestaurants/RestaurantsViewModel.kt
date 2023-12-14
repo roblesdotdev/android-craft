@@ -27,6 +27,10 @@ class RestaurantsViewModel : ViewModel() {
 
     private val errorHandler = CoroutineExceptionHandler { _, exception ->
         exception.printStackTrace()
+        state.value = state.value.copy(
+            error = exception.message,
+            isLoading = false,
+        )
     }
 
     init {

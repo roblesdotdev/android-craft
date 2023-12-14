@@ -55,6 +55,7 @@ fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
             }
         }
         if (state.isLoading) CircularProgressIndicator()
+        if (state.error != null) Text(text = state.error)
     }
 }
 
