@@ -28,14 +28,15 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.roblesdotdev.jetrestaurants.restaurants.domain.Restaurant
 import com.roblesdotdev.jetrestaurants.ui.theme.JetRestaurantsTheme
 
 @Composable
-fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
-    val viewModel: RestaurantsViewModel = viewModel()
-    val state = viewModel.state.value
+fun RestaurantsScreen(
+    state: RestaurantsScreenState,
+    onItemClick: (id: Int) -> Unit = {},
+    onFavoriteClick: (id: Int, oldValue: Boolean) -> Unit
+) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize(),
@@ -47,7 +48,7 @@ fun RestaurantsScreen(onItemClick: (id: Int) -> Unit = {}) {
                 RestaurantItem(
                     restaurant,
                     onFavoriteClick = { id, oldValue ->
-                        viewModel.toggleFavorite(id, oldValue)
+                        onFavoriteClick(id, oldValue)
                     },
                     onItemClick = { id ->
                        onItemClick(id)
@@ -158,6 +159,10 @@ fun FavoriteIcon(
 @Composable
 fun RestaurantsScreenPreview() {
     JetRestaurantsTheme {
-        RestaurantsScreen()
+        RestaurantsScreen(
+            RestaurantsScreenState(listOf(), true),
+            {},
+            {_, _ -> }
+        )
     }
 }
