@@ -1,32 +1,23 @@
 package com.roblesdotdev.jetrestaurants.restaurants.data
 
-import com.roblesdotdev.jetrestaurants.restaurants.domain.Restaurant
-import com.roblesdotdev.jetrestaurants.RestaurantsApplication
 import com.roblesdotdev.jetrestaurants.restaurants.data.local.LocalRestaurant
 import com.roblesdotdev.jetrestaurants.restaurants.data.local.PartialLocalRestaurant
-import com.roblesdotdev.jetrestaurants.restaurants.data.local.RestaurantsDb
-import com.roblesdotdev.jetrestaurants.restaurants.data.remote.RemoteRestaurantsApiService
+import com.roblesdotdev.jetrestaurants.restaurants.data.local.RestaurantsDao
+import com.roblesdotdev.jetrestaurants.restaurants.data.remote.RestaurantsApiService
+import com.roblesdotdev.jetrestaurants.restaurants.domain.Restaurant
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.net.ConnectException
 import java.net.UnknownHostException
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class RestaurantsRepository {
-    private var restInterface: RemoteRestaurantsApiService =
-        Retrofit.Builder()
-            .addConverterFactory(
-                GsonConverterFactory.create()
-            )
-            .baseUrl("https://restaurants-app-b8c89-default-rtdb.firebaseio.com/")
-            .build()
-            .create(RemoteRestaurantsApiService::class.java)
-
-    private var restaurantsDao = RestaurantsDb
-        .getDaoInstance(RestaurantsApplication.getAppContext())
-
+@Singleton
+class RestaurantsRepository @Inject constructor(
+    private val restInterface: RestaurantsApiService,
+    private val restaurantsDao: RestaurantsDao
+) {
     suspend fun toggleFavoriteRestaurant(id: Int, value: Boolean) =
         withContext(Dispatchers.IO) {
             restaurantsDao.update(
