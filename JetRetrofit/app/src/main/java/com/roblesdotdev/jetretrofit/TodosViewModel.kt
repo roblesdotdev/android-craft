@@ -10,7 +10,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class TodosViewModel : ViewModel() {
     private var restInterface: TodosApiService
-    private val _state = mutableStateOf(TodoState())
+    private val _state = mutableStateOf(TodoState(isLoading = true))
     val state: State<TodoState> = _state
 
     init {
@@ -30,7 +30,8 @@ class TodosViewModel : ViewModel() {
         viewModelScope.launch {
             val newTodos = restInterface.getTodos()
             _state.value = _state.value.copy(
-                todos = newTodos
+                todos = newTodos,
+                isLoading = false
             )
         }
     }
